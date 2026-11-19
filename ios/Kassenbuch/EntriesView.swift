@@ -8,7 +8,6 @@ struct EntriesView: View {
     @State private var search = ""
 
     var body: some View {
-        @Bindable var s = state
         let searching = !search.trimmingCharacters(in: .whitespaces).isEmpty
         let list = filtered(searching: searching)
         let t = list.totals()
@@ -46,9 +45,11 @@ struct EntriesView: View {
 
                 if list.isEmpty {
                     Section {
-                        ContentUnavailableView(searching ? "Nichts gefunden" : "Keine Buchungen",
-                                               systemImage: searching ? "magnifyingglass" : "tray",
-                                               description: Text(searching ? "Keine Buchung passt zu „\(search)“." : "Für \(state.month.title) gibt es hier noch nichts. Tippe auf +, um eine Buchung anzulegen."))
+                        ContentUnavailableView {
+                            Label(searching ? "Nichts gefunden" : "Keine Buchungen", systemImage: searching ? "magnifyingglass" : "tray")
+                        } description: {
+                            Text(searching ? "Keine Buchung passt zu „\(search)“." : "Für \(state.month.title) gibt es hier noch nichts. Tippe auf +, um eine Buchung anzulegen.")
+                        }
                     }
                     .listRowBackground(Color.clear)
                 }

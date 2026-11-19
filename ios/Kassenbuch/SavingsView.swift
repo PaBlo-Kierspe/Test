@@ -185,7 +185,7 @@ struct GoalCard: View {
                 Ring(progress: stats.progress, color: stats.done ? Palette.income : Palette.saving)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(Fmt.eur(stats.balance)).font(.title3.bold()).monospacedDigit()
-                    Text("von \(Fmt.eur(goal.target))" + (stats.done ? "" : " · noch \(Fmt.eur(stats.rest))"))
+                    Text(stats.done ? "von \(Fmt.eur(goal.target))" : "von \(Fmt.eur(goal.target)) · noch \(Fmt.eur(stats.rest))")
                         .font(.footnote).foregroundStyle(.secondary)
                     if stats.done {
                         Pill(text: "Ziel erreicht", symbol: "checkmark", color: Palette.income)
@@ -213,7 +213,8 @@ struct GoalCard: View {
                         }
                     }
                     if stats.onTrack != true, let need = stats.needed {
-                        Text("Dafür nötig: **\(Fmt.eur(need))** im Monat" + (stats.rate > 0 ? " (bisher Ø \(Fmt.eur(stats.rate)))" : ""))
+                        (Text("Dafür nötig: **\(Fmt.eur(need))** im Monat")
+                            + Text(stats.rate > 0 ? " (bisher Ø \(Fmt.eur(stats.rate)))" : ""))
                             .font(.footnote).foregroundStyle(.secondary)
                     }
                 }

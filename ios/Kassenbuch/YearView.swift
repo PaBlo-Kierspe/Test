@@ -8,11 +8,11 @@ struct YearView: View {
     var body: some View {
         let yearEntries = entries.inYear(state.year)
         let tot = yearEntries.totals()
-        let rows = (1...12).map { m -> (YM, Totals) in
+        let rows = (1...12).map { m -> MonthRow in
             let ym = YM(year: state.year, month: m)
-            return (ym, yearEntries.inMonth(ym).totals())
+            return MonthRow(ym: ym, totals: yearEntries.inMonth(ym).totals())
         }
-        let activeMonths = max(1, rows.filter { $0.1.hasData }.count)
+        let activeMonths = max(1, rows.filter { $0.totals.hasData }.count)
 
         NavigationStack {
             ScrollView {
@@ -27,51 +27,58 @@ struct YearView: View {
 
                     Card(title: "Monatsübersicht \(String(state.year))") {
                         ScrollView(.horizontal, showsIndicators: false) {
-                            Grid(alignment: .trailing, horizontalSpacing: 16, verticalSpacing: 0) {
-                                GridRow {
-                                    header("Monat").gridColumnAlignment(.leading)
-                                    header("Einnahmen", Palette.income)
-                                    header("davon passiv")
-                                    header("Ausgaben", Palette.expense)
-                                    header("Ersparnisse", Palette.saving)
-                                    header("Saldo")
+                            VStack(spacing: 0) {
+                                HStack(spacing: 0) {
+                                    header("Monat").frame(width: monthW, alignment: .leading)
+                                    header("Einnahmen", Palette.income).frame(width: colW, alignment: .trailing)
+                                    header("davon passiv").frame(width: colW, alignment: .trailing)
+                                    header("Ausgaben", Palette.expense).frame(width: colW, alignment: .trailing)
+                                    header("Ersparnisse", Palette.saving).frame(width: colW, alignment: .trailing)
+                                    header("Saldo").frame(width: colW, alignment: .trailing)
                                 }
                                 .padding(.bottom, 8)
                                 Divider()
-                                ForEach(rows, id: \.0) { ym, t in
-                                    GridRow {
-                                        Text(ym.monthName).gridColumnAlignment(.leading)
+                                ForEach(rows) { row in
+                                    let t = row.totals
+                                    HStack(spacing: 0) {
+                                        Text(row.ym.monthName).frame(width: monthW, alignment: .leading)
                                         cell(t.income)
                                         cell(t.passive)
                                         cell(t.expense)
                                         cell(t.saving)
-                                        if t.hasData {
-                                            Text(Fmt.eur(t.free)).foregroundStyle(t.free < 0 ? Palette.negative : .primary)
-                                        } else {
-                                            Text("–").foregroundStyle(.tertiary)
+                                        Group {
+                                            if t.hasData {
+                                                Text(Fmt.eur(t.free)).foregroundStyle(t.free < 0 ? Palette.negative : .primary)
+                                            } else {
+                                                Text("–").foregroundStyle(.tertiary)
+                                            }
                                         }
+                                        .frame(width: colW, alignment: .trailing)
                                     }
                                     .font(.subheadline)
                                     .monospacedDigit()
                                     .padding(.vertical, 9)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
-                                        state.month = ym
+                                        state.month = row.ym
                                         state.filter = .all
                                         state.tab = .entries
                                     }
                                     Divider()
                                 }
-                                GridRow {
-                                    Text("Summe").gridColumnAlignment(.leading)
-                                    Text(Fmt.eur(tot.income))
-                                    Text(Fmt.eur(tot.passive))
-                                    Text(Fmt.eur(tot.expense))
-                                    Text(Fmt.eur(tot.saving))
+                                HStack(spacing: 0) {
+                                    Text("Summe").frame(width: monthW, alignment: .leading)
+                                    Text(Fmt.eur(tot.income)).frame(width: colW, alignment: .trailing)
+                                    Text(Fmt.eur(tot.passive)).frame(width: colW, alignment: .trailing)
+                                    Text(Fmt.eur(tot.expense)).frame(width: colW, alignment: .trailing)
+                                    Text(Fmt.eur(tot.saving)).frame(width: colW, alignment: .trailing)
                                     Text(Fmt.eur(tot.free)).foregroundStyle(tot.free < 0 ? Palette.negative : .primary)
+                                        .frame(width: colW, alignment: .trailing)
                                 }
                                 .font(.subheadline.bold())
                                 .monospacedDigit()
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                                 .padding(.top, 9)
                             }
                         }
@@ -96,12 +103,25 @@ struct YearView: View {
         }
     }
 
-    @ViewBuilder
+    private let monthW: CGFloat = 92
+    private let colW: CGFloat = 108
+
     private func cell(_ v: Double) -> some View {
-        if v == 0 {
-            Text("–").foregroundStyle(.tertiary)
-        } else {
-            Text(Fmt.eur(v))
+        Group {
+            if v == 0 {
+                Text("–").foregroundStyle(.tertiary)
+            } else {
+                Text(Fmt.eur(v))
+            }
         }
+        .lineLimit(1)
+        .minimumScaleFactor(0.8)
+        .frame(width: colW, alignment: .trailing)
     }
+}
+
+struct MonthRow: Identifiable {
+    let ym: YM
+    let totals: Totals
+    var id: Int { ym.id }
 }
