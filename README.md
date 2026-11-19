@@ -1,5 +1,44 @@
 # Kassenbuch – Einnahmen, Ausgaben & Ersparnisse fürs iPhone
 
+Das Repository enthält zwei Versionen:
+
+| | Native iPhone-App (`ios/`) | Web-App (`index.html`) |
+|---|---|---|
+| Technik | Swift, SwiftUI, SwiftData, Swift Charts | HTML/JS, als PWA installierbar |
+| Installation | Xcode (Mac) oder Sideloading | Safari → „Zum Home-Bildschirm“ |
+| Face-ID-Sperre | ja | nein |
+| Backups | gleiches Format, gegenseitig ladbar | |
+
+## Native iPhone-App installieren
+
+**Mit Mac (empfohlen, kostenlos):**
+1. Xcode 16 oder neuer aus dem App Store installieren.
+2. `ios/Kassenbuch.xcodeproj` öffnen.
+3. Links das Projekt *Kassenbuch* → *Signing & Capabilities* → bei *Team* deine Apple-ID wählen
+   (ggf. *Bundle Identifier* ändern, z. B. `de.deinname.kassenbuch`).
+4. iPhone per Kabel anschließen, oben als Ziel auswählen und auf ▶︎ klicken.
+5. Auf dem iPhone: *Einstellungen → Allgemein → VPN & Geräteverwaltung* → Entwickler vertrauen.
+   Ab iOS 16 zusätzlich *Einstellungen → Datenschutz & Sicherheit → Entwicklermodus* einschalten.
+
+Mit einer kostenlosen Apple-ID läuft die App 7 Tage und muss dann erneut über Xcode installiert
+werden. Mit dem Apple Developer Program (99 €/Jahr) gilt sie ein Jahr, und du kannst sie über
+TestFlight oder den App Store verteilen.
+
+**Ohne Mac:** Der GitHub-Workflow *iOS-App bauen* erzeugt bei jedem Push eine unsignierte
+`Kassenbuch-unsigniert.ipa` (unter *Actions → Lauf → Artifacts*). Diese kannst du z. B. mit
+Sideloadly (Windows/Mac) oder AltStore mit deiner Apple-ID signieren und aufs iPhone laden.
+
+### Funktionen der nativen App
+- Alles aus der Web-Version (Übersicht, Buchungen, Jahr, Sparen mit Sparzielen und
+  voraussichtlichem Datum, monatliche Buchungen, CSV-Export, Backups)
+- Native Diagramme (Swift Charts), Suche über alle Buchungen, Wischen zum Löschen
+- Sperre mit Face ID / Touch ID / Code, Inhalt im App-Umschalter verborgen
+- Hell- und Dunkelmodus, Backups der Web-Version lassen sich importieren
+
+---
+
+# Web-App (PWA)
+
 Eine iPhone-App (Web-App/PWA), mit der du alle Einnahmen und Ausgaben übersichtlich erfasst –
 inklusive **Zinsen, Mieteinnahmen und Dividenden** (passives Einkommen) und einer eigenen
 Spalte für **Ersparnisse**.
