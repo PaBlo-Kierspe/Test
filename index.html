@@ -158,6 +158,9 @@ th .dot { margin-right: 4px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
 .field label, .lab { font-size: 13px; color: var(--muted); font-weight: 500; }
 .input { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 11px 12px; font-size: 16px; }
+.input { -webkit-appearance: none; appearance: none; min-width: 0; margin: 0; min-height: 46px; color: var(--fg); }
+input[type=date].input { display: block; text-align: left; }
+input[type=date]::-webkit-date-and-time-value { text-align: left; }
 .btn { border: 0; border-radius: 14px; padding: 13px 16px; font-weight: 600; font-size: 16px; background: var(--chip); color: var(--fg); }
 .btn.primary { background: var(--ink); color: var(--ink-fg); }
 .btn.danger { color: var(--neg); }
@@ -202,10 +205,15 @@ nav.tabs button[aria-current="page"] { color: var(--fg); }
 .seg input { position: absolute; opacity: 0; pointer-events: none; }
 .seg input:checked + label { background: var(--card); color: var(--fg); box-shadow: 0 1px 4px rgb(0 0 0 / .12); }
 .seg input:focus-visible + label { outline: 2px solid var(--sav); }
-.amount { display: flex; align-items: baseline; justify-content: center; gap: 6px; padding: 6px 0; }
-.amount input { border: 0; background: transparent; font: 700 44px/1.1 var(--font-d); text-align: right; width: 4.2ch; max-width: 80%; letter-spacing: -0.02em; }
-.amount input:focus { outline: none; }
-.amount span { font: 600 26px var(--font-d); color: var(--muted); }
+.amount { position: relative; display: block; }
+.amount input {
+  -webkit-appearance: none; appearance: none; display: block; width: 100%; min-width: 0; margin: 0;
+  border: 2px solid var(--line); border-radius: 16px; background: var(--bg); color: var(--fg);
+  padding: 12px 52px; height: 72px; font: 700 36px/1 var(--font-d); text-align: center; letter-spacing: -0.01em;
+}
+.amount input::placeholder { color: var(--faint); opacity: 1; }
+.amount input:focus { outline: none; border-color: var(--sav); }
+.amount span { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); font: 600 24px/1 var(--font-d); color: var(--muted); pointer-events: none; }
 .cats { display: flex; flex-wrap: wrap; gap: 7px; }
 .cats input { position: absolute; opacity: 0; pointer-events: none; }
 .cats label { padding: 8px 12px; border-radius: 999px; background: var(--chip); font-size: 14px; font-weight: 500; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; }
@@ -259,7 +267,7 @@ nav.tabs button[aria-current="page"] { color: var(--fg); }
       <input type="radio" name="type" id="t-expense" value="expense" checked><label for="t-expense">Ausgabe</label>
       <input type="radio" name="type" id="t-saving" value="saving"><label for="t-saving">Sparen</label>
     </div>
-    <div class="amount"><input id="amount" inputmode="decimal" placeholder="0,00" aria-label="Betrag" required><span>€</span></div>
+    <div class="amount"><input id="amount" type="text" inputmode="decimal" enterkeyhint="done" placeholder="0,00" aria-label="Betrag in Euro" maxlength="14" required><span>€</span></div>
     <div class="field"><span class="lab">Kategorie</span><div class="cats" id="cats"></div></div>
     <div class="two">
       <div class="field"><label for="date">Datum</label><input class="input" type="date" id="date" required></div>
@@ -715,7 +723,7 @@ function fillCats(type, sel) {
   $('cats').innerHTML = CATS[type].map((c, i) => `<input type="radio" name="cat" id="cat-${c.id}" value="${c.id}" ${(sel ? sel === c.id : i === 0) ? 'checked' : ''}><label for="cat-${c.id}">${esc(c.name)}</label>`).join('');
 }
 form.addEventListener('change', e => { if (e.target.name === 'type') fillCats(e.target.value); });
-const sizeAmt = () => { $('amount').style.width = Math.max(4.2, $('amount').value.length + 0.6) + 'ch'; };
+const sizeAmt = () => { const n = $('amount').value.length; $('amount').style.fontSize = n > 11 ? '24px' : n > 8 ? '30px' : ''; };
 $('amount').addEventListener('input', sizeAmt);
 function openSheet(entry) {
   U.sel = entry || null;
