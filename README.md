@@ -14,7 +14,7 @@ Spalte für **Ersparnisse**.
 - **Buchungen**: Liste nach Tagen, Filter (Einnahmen, Zinsen·Mieten·Dividenden, Ausgaben, Ersparnisse),
   Antippen zum Bearbeiten oder Löschen
 - **Jahr**: Tabelle mit den Spalten Einnahmen · davon passiv · Ausgaben · **Ersparnisse** · Saldo
-- **Sparen**: Sparguthaben, Sparziel mit Fortschrittsring und Prognose, Verlauf über 12 Monate
+- **Sparen**: Sparguthaben mit Verlauf über 12 Monate und **beliebig viele Sparziele** – jeweils mit Fortschritt, **voraussichtlichem Datum bis zum Erreichen** und optionalem Wunschtermin („Im Plan“ / nötige Sparrate pro Monat)
 - **Monatliche Buchungen** (Gehalt, Miete, Sparplan …) werden automatisch jeden Monat angelegt
 - **Backup** als Datei sichern/laden, Export als CSV für Excel/Numbers
 - Hell- und Dunkelmodus, funktioniert offline, Daten bleiben nur auf dem Gerät
